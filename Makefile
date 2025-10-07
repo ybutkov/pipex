@@ -19,7 +19,11 @@ LFLAGS = -L$(LIBFT_DIR) -l$(LIBFT_NAME)
 
 C_FDF_FILES = \
 	parcer/parcer.c \
-	parcer/get_cmd_path.c
+	parcer/get_cmd_path.c \
+	ast/ast_core.c \
+	ast/ast_node_core.c \
+	ast/ast_node_core_2.c \
+	shell/shell_core.c
 
 
 

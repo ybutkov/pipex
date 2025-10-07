@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ast_node_internal.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/07 22:02:56 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/06 18:04:54 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/06 18:07:16 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef AST_NODE_INTERNAL_H
+# define AST_NODE_INTERNAL_H
 
-# define WHICH_CMD "/usr/bin/which"
+# include "ast.h"
 
-char	*get_cmd_path(char *cmd, char **envp);
+void	*get_content(t_ast_node *node);
+void	*set_content(t_ast_node *node, void *content);
 
 #endif

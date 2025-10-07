@@ -1,20 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ast_node_core_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/07 22:02:56 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/06 18:05:33 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/06 18:09:36 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "ast.h"
 
-# define WHICH_CMD "/usr/bin/which"
+void	*get_content(t_ast_node *node)
+{
+	if (!node)
+		return (NULL);
+	return (node->content);
+}
 
-char	*get_cmd_path(char *cmd, char **envp);
-
-#endif
+void	*set_content(t_ast_node *node, void *content)
+{
+	if (!node)
+		return (NULL);
+	node->content = content;
+	return (content);
+}

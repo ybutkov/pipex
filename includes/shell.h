@@ -1,20 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/07 22:02:56 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/07 12:16:54 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/07 16:52:45 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef SHELL_H
+# define SHELL_H
 
-# define WHICH_CMD "/usr/bin/which"
+# include "ast.h"
+# include "shell_node.h"
 
-char	*get_cmd_path(char *cmd, char **envp);
+typedef struct s_shell
+{
+	t_ast	*ast;
+	t_ctx	*ctx;
+
+	void	*(*build)(struct s_shell *shell, char **commands);
+	void	*(*free)(struct s_shell *shell);
+	void	(*execute)(struct s_shell *shell);
+}			t_shell;
+
+t_shell		*create_shell(char	**envp);
 
 #endif
