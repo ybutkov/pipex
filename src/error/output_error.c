@@ -1,22 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   output_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 14:34:57 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/08 17:43:42 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/08 17:54:58 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "pipex.h"
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
-# define WHICH_CMD "/usr/bin/which"
-# define PIPEX "pipex: "
-# define EXIT_CMD_NOT_FOUND 127
-
-char	*get_cmd_path(char *cmd, char **envp);
-
-#endif
+void output_error(const char *message)
+{
+	printf("%s%s%s\n", PIPEX, strerror(errno), message);
+}

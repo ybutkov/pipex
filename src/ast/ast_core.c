@@ -6,18 +6,32 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 17:29:26 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/06 18:12:32 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/09 15:28:35 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ast.h"
 #include <stdlib.h>
 
+static void free_ast_node(t_ast_node *node)
+{
+	if (!node)
+		return ;
+	if (node->content)
+		free(node->content);
+	if (node->left)
+		free_ast_node(node->left);
+	if (node->right)
+		free_ast_node(node->right);
+	free(node);
+}
+
 static void free_ast(t_ast *ast)
 {
 	if (!ast)
 		return ;
-	// Освободить узлы и их содержимое здесь, если необходимо
+	free_ast_node(ast->root);
+
 	free(ast);
 }
 

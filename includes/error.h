@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   error.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 14:34:57 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/08 17:55:18 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/08 17:55:50 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef ERROR_H
+# define ERROR_H
 
-# define WHICH_CMD "/usr/bin/which"
-# define PIPEX "pipex: "
-# define EXIT_CMD_NOT_FOUND 127
-
-char	*get_cmd_path(char *cmd, char **envp);
+void	output_error(const char *message);
 
 #endif

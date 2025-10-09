@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 20:03:14 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/07 13:48:32 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/09 14:53:23 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 typedef struct s_ctx
 {
 	char	**envp;
+	int		last_exit_status;
 }				t_ctx;
 
 typedef enum e_node_type
@@ -52,6 +53,8 @@ typedef struct s_cmd
 	char			**argv;
 	char			*path;
 	t_list			*redirs;
+
+	void	(*free_cmd)(struct s_cmd *cmd);
 }					t_cmd;
 
 typedef struct s_shell_node

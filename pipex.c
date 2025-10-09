@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:10:57 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/07 16:56:03 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/09 12:46:11 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,22 +49,32 @@ int	main(int argc, char **argv, char **envp)
 
 
 	t_shell	*shell;
-	int i;
+	int		i;
+	int		param_count;
+	int		exit_status;
 
 	char **commands;
 	commands = malloc(argc * sizeof(char *));
 	i = 1;
+	param_count = 0;
 	while (i < argc)
 	{
-		commands[i - 1] = argv[i];
+		if (ft_strlen(argv[i]) > 0)
+			commands[param_count++] = argv[i];
 		i++;
 	}
-	commands[i - 1] = NULL;
+	commands[param_count] = NULL;
+	if (param_count < 4)
+	{
+		return (EXIT_FAILURE);
+	}
 
 	shell = create_shell(envp);
-	shell->build(shell, commands);
+	shell->build(shell, commands, param_count);
 	shell->execute(shell);
+	exit_status = shell->ctx->last_exit_status;
+	shell->free(shell);
 	// execute_ast(root);
 	// pipex_n_commands(commands, 3, "infile.txt", "outfile.txt");
-	return (0);
+	return (exit_status);
 }

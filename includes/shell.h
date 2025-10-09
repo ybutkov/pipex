@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:16:54 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/07 16:52:45 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/08 15:15:17 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef struct s_shell
 	t_ast	*ast;
 	t_ctx	*ctx;
 
-	void	*(*build)(struct s_shell *shell, char **commands);
+	void	*(*build)(struct s_shell *shell, char **commands, int argc);
 	void	*(*free)(struct s_shell *shell);
 	void	(*execute)(struct s_shell *shell);
 }			t_shell;

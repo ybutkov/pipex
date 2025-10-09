@@ -23,7 +23,8 @@ C_FDF_FILES = \
 	ast/ast_core.c \
 	ast/ast_node_core.c \
 	ast/ast_node_core_2.c \
-	shell/shell_core.c
+	shell/shell_core.c \
+	error/output_error.c 
 
 
 
