@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:10:57 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 12:46:11 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/09 20:17:15 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int	main(int argc, char **argv, char **envp)
 	shell->execute(shell);
 	exit_status = shell->ctx->last_exit_status;
 	shell->free(shell);
+	printf("Exit status: %d\n", exit_status);
 	// execute_ast(root);
 	// pipex_n_commands(commands, 3, "infile.txt", "outfile.txt");
 	return (exit_status);

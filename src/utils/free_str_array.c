@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   free_str_array.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 18:07:52 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/09 18:07:21 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/09 18:14:22 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include <stdlib.h>
 
-# define WHICH_CMD "/usr/bin/which"
-# define PIPEX "pipex: "
-# define EXIT_CMD_NOT_FOUND 127
+void	free_str_array(char **arr)
+{
+	int	i;
 
-char	*get_cmd_path(char *cmd, char **envp);
-void	free_str_array(char **arr);
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
 
-#endif

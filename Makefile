@@ -17,18 +17,20 @@ CFLAGS = -Wall -Wextra -Werror -g -O0 $(INCLUDES)
 
 LFLAGS = -L$(LIBFT_DIR) -l$(LIBFT_NAME)
 
-C_FDF_FILES = \
+C_PIPEX_FILES = \
 	parcer/parcer.c \
 	parcer/get_cmd_path.c \
 	ast/ast_core.c \
 	ast/ast_node_core.c \
 	ast/ast_node_core_2.c \
 	shell/shell_core.c \
-	error/output_error.c 
+	shell/commands.c \
+	shell/shell_node.c \
+	error/output_error.c \
+	utils/free_str_array.c
 
 
-
-C_FIlES = $(addprefix $(SRC)/, $(C_FDF_FILES))
+C_FIlES = $(addprefix $(SRC)/, $(C_PIPEX_FILES))
 C_OBJ_FIlES =	$(C_FIlES:%.c=$(BUILD_DIR)/%.o)
 
 BUILD_DIRS := $(sort $(dir $(C_OBJ_FIlES)))
