@@ -84,20 +84,20 @@ BUILD_DIRS := $(sort $(dir $(C_OBJ_FIlES)))
 all : $(NAME)
 
 ${NAME} : $(BUILD_DIRS) $(C_OBJ_FIlES)
-	ar rcs $(NAME) $(C_OBJ_FIlES)
+	@ar rcs $(NAME) $(C_OBJ_FIlES)
 
 clean :
-	rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
 
 fclean f: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re	: fclean all
 
 $(BUILD_DIRS):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(BUILD_DIR)/%.o : %.c | $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY : all clean fclean f re 
+.PHONY : all clean fclean f re

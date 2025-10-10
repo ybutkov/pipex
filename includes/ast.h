@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 17:27:06 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 19:21:04 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/10 19:45:50 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,3 @@ t_ast_node				*create_ast_node(void *content);
 
 #endif
 
-	// t_redir *redirect = malloc(sizeof(t_redir));
-	// redirect->type = REDIR_OUT;
-	// redirect->target = commands[argc - 1];
-	// redir = ft_lstnew(redirect);
-	// node->data.cmd->redirs = redir;

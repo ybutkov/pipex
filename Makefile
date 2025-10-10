@@ -11,6 +11,8 @@ LIBFT = $(LIBFT_DIR)/libft.a
 INCLUDES = -Iincludes
 INCLUDES += -I$(LIBFT_DIR)/includes
 
+PRINT_FLAG = -s --no-print-directory
+
 CC = cc
 # CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address,undefined
 CFLAGS = -Wall -Wextra -Werror -g -O0 $(INCLUDES)
@@ -26,8 +28,11 @@ C_PIPEX_FILES = \
 	shell/shell_core.c \
 	shell/commands.c \
 	shell/shell_node.c \
+	shell/contex.c \
+	shell/redirect.c \
 	error/output_error.c \
-	utils/free_str_array.c
+	utils/free_str_array.c \
+	utils/exit_from_child.c
 
 
 C_FIlES = $(addprefix $(SRC)/, $(C_PIPEX_FILES))
@@ -38,25 +43,28 @@ BUILD_DIRS := $(sort $(dir $(C_OBJ_FIlES)))
 all : $(NAME)
 
 ${NAME} : $(LIBFT) $(BUILD_DIRS) $(C_OBJ_FIlES)
-	$(CC) $(CFLAGS) $(C_OBJ_FIlES) $(NAME_C) $(LFLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(C_OBJ_FIlES) $(NAME_C) $(LFLAGS) -o $(NAME)
+	@echo "Build OK"
 
 clean :
-	rm -rf $(BUILD_DIR)
-	make -C $(LIBFT_DIR) clean
+	@rm -rf $(BUILD_DIR)
+	@make -C $(LIBFT_DIR) clean $(PRINT_FLAG)
+	@echo "clean OK"
 
 fclean f: clean
-	rm -f $(NAME)
-	make -C $(LIBFT_DIR) fclean
+	@rm -f $(NAME)
+	@make -C $(LIBFT_DIR) fclean $(PRINT_FLAG)
+	@echo "fclean OK"
 
 re	: fclean all
 
 $(BUILD_DIRS):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(BUILD_DIR)/%.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT) :
-	make -C $(LIBFT_DIR) all
+	@make -C $(LIBFT_DIR) all $(PRINT_FLAG)
 
 .PHONY : all clean fclean re bonus

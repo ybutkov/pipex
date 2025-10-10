@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:00:19 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 19:53:25 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/10 16:13:00 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static void free_shell_node(t_shell_node *node)
 	if (node->type == NODE_CMD && node->data.cmd)
 	{
 		node->data.cmd->free_cmd(node->data.cmd);
+
 	}
 	else if (node->type == NODE_SUBSHELL)
 	{
@@ -51,9 +52,10 @@ static void free_shell_node(t_shell_node *node)
 			|| node->type == NODE_REDIR_HEREDOC)
 		&& node->data.redir)
 	{
-		if (node->data.redir->target)
-			free(node->data.redir->target);
-		free(node->data.redir);
+		// if (node->data.redir->target)
+		// 	free(node->data.redir->target);
+		// free(node->data.redir);
+		node->data.redir->free_redir(node->data.redir);
 	}
 	free(node);
 }

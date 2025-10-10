@@ -6,13 +6,14 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 20:33:32 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/10 20:08:36 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "shell.h"
 #include "error.h"
+#include "utils.h"
 #include <fcntl.h>
 #include <sys/wait.h>
 
@@ -27,7 +28,7 @@ static void free_shell_node_bridge(void *content)
 	if (!content)
 		return ;
 	node = (t_shell_node *)content;
-	if (node->free)
+	if (node && node->free)
 		node->free(node);
 }
 
@@ -36,10 +37,16 @@ static void	free_shell(t_shell *shell)
 	if (!shell)
 		return ;
 	if (shell->ast)
+	{
 		shell->ast->free(shell->ast, free_shell_node_bridge);
+		shell->ast = NULL;
+	}
 
 	if (shell->ctx)
-		free(shell->ctx);
+	{
+		shell->ctx->free_ctx(shell->ctx);
+		shell->ctx = NULL;
+	}
 	free(shell);
 }
 
@@ -52,6 +59,10 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 	t_ast_node		*curr_node;
 	t_list			*redir;
 	t_cmd 			*cmd;
+	t_redir			*redirect;
+	t_shell_node	*pipe_node;
+	t_ast_node		*pipe_ast;
+
 	char			*full_path;
 	char			**cmd_argv;
 	char			*redirs[2];
@@ -59,103 +70,55 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 
 	node = create_shell_node(NODE_PIPE, NULL);
 	ast_node = create_ast_node(node);
-
-	// node = malloc(sizeof(t_shell_node));
-	// node->type = NODE_PIPE;
-	// node->data.cmd = NULL;
-	// ast_node = create_ast_node(node);
 	shell->ast->set_root(shell->ast, ast_node);
 	curr_node = shell->ast->get_root(shell->ast);
 
-	// node = malloc(sizeof(t_shell_node));
-	// node->type = NODE_REDIR_IN;
-	// node->data.redir = malloc(sizeof(t_redir));
-	// node->data.redir->type = REDIR_IN;
-	// node->data.redir->target = ft_strdup(*commands);
-	// commands++;
-	// ast_node = create_ast_node(node);
-	// curr_node->set_left(curr_node, ast_node);
-	// curr_node = curr_node->get_left(curr_node);
-	// cmd_argv = ft_split(*commands, ' ');
-	// commands++;
-	// node = malloc(sizeof(t_shell_node));
-	// node->type = NODE_CMD;
-	// node->data.cmd = malloc(sizeof(t_cmd));
-	// node->data.cmd->argv = cmd_argv;
-	// full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
-	// node->data.cmd->path = full_path;
-	// ast_node = create_ast_node(node);
-	// curr_node->set_left(curr_node, ast_node);
+	redirs[0] = ft_strdup(commands[0]);
 
-	//cmd_argv = ft_split(commands[0], ' ');
-	// redirs[0] = cmd_argv[0];
-	//free_str_array(cmd_argv++);
-	redirs[0] = commands[0];
 	i = 1;
 	while (i < argc - 1)
 	{
 		cmd_argv = ft_split(commands[i], ' ');
+		if (!cmd_argv)
+			continue;
 		full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
 		cmd = create_cmd(cmd_argv, full_path);
 		node = create_shell_node(NODE_CMD, cmd);
 
-		// node = malloc(sizeof(t_shell_node));
-		// node->type = NODE_CMD;
-		// node->data.cmd = malloc(sizeof(t_cmd));
-		// cmd_argv = ft_split(commands[i], ' ');
-		// node->data.cmd->argv = cmd_argv;
-		// full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
-		// node->data.cmd->path = full_path;
-
-		if (redirs[0])
+		if (i == 1)
 		{
-			redir = malloc(sizeof(t_list));
-			redir->content = malloc(sizeof(t_redir));
-			redir->next = NULL;
-			((t_redir *)redir->content)->type = REDIR_IN;
-			((t_redir *)redir->content)->target = redirs[0];
-			node->data.cmd->redirs = redir;
-			redirs[0] = NULL;
+			redirect = create_redir(REDIR_IN, redirs[0]);
+			node->data.cmd->redirs = ft_lstnew(redirect);
 		}
-		ast_node = create_ast_node(node);
-		curr_node->set_left(curr_node, ast_node);
-		i++;
-		cmd_argv = ft_split(commands[i], ' ');
+
 		if (i == argc - 2)
 		{
-			full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
-			cmd = create_cmd(cmd_argv, full_path);
-			node = create_shell_node(NODE_CMD, cmd);
-			ast_node = create_ast_node(node);
-			curr_node->set_right(curr_node, ast_node);
-			curr_node = curr_node->get_right(curr_node);
-			break ;
+			redirect = create_redir(REDIR_OUT, ft_strdup(commands[argc - 1]));
+			redir = ft_lstnew(redirect);
+			if (node->data.cmd->redirs)
+				ft_lstadd_back(&node->data.cmd->redirs, redir);
+			else
+				node->data.cmd->redirs = redir;
 		}
-		if (i < argc - 1)
+
+		ast_node = create_ast_node(node);
+		if (i == 1)
+			curr_node->set_left(curr_node, ast_node);
+		else if (i == argc -2)
+			curr_node->set_right(curr_node, ast_node);
+		else
 		{
-			node = create_shell_node(NODE_PIPE, NULL);
-			ast_node = create_ast_node(node);
-			curr_node->set_right(curr_node, ast_node);
-			curr_node = curr_node->get_right(curr_node);
+			pipe_node = create_shell_node(NODE_PIPE, NULL);
+			pipe_ast = create_ast_node(pipe_node);
+			curr_node->set_right(curr_node, pipe_ast);
+			pipe_ast->set_left(pipe_ast, ast_node);
+			curr_node = pipe_ast;
 		}
+		i++;
 	}
 
-	t_redir *redirect = malloc(sizeof(t_redir));
-	redirect->type = REDIR_OUT;
-	redirect->target = commands[argc - 1];
-	redir = ft_lstnew(redirect);
-	node->data.cmd->redirs = redir;
-
-	// redir = malloc(sizeof(t_list));
-	// redir->content = malloc(sizeof(t_redir));
-	// ((t_redir *)redir->content)->type = REDIR_OUT;
-	// ((t_redir *)redir->content)->target = commands[argc - 1];
-	// node->data.cmd->redirs = redir;
-	free(commands);
 	return (NULL);
 }
-
-
 
 static void	apply_redirect(t_cmd *cmd)
 {
@@ -163,22 +126,21 @@ static void	apply_redirect(t_cmd *cmd)
 	t_redir	*redirect;
 	int		fd;
 
-	// printf("------------------------------apply_redirect\n");
-	// printf("cmd->redirs: %p\n", cmd->redirs->content);
-	// fflush(stdout);
+	// cmd->redirs ?
+	if (!cmd)
+		return ;
+
 	redir = cmd->redirs;
 	while (redir)
 	{
 		redirect = (t_redir *)redir->content;
-		// printf("redirect->type: %d, target: %s\n", redirect->type, redirect->target);
-		// fflush(stdout);
 		if (redirect->type == REDIR_IN)
 		{
 			fd = open(redirect->target, O_RDONLY);
 			if (fd == -1)
 			{
-				perror(redirect->target);
-				// output_error(redirect->target);
+				output_error(redirect->target);
+				// exit_from_child(EXIT_FAILURE);
 				exit(EXIT_FAILURE);
 			}
 			dup2(fd, STDIN_FILENO);
@@ -189,9 +151,8 @@ static void	apply_redirect(t_cmd *cmd)
 			fd = open(redirect->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd == -1)
 			{
-				// output_error(redirect->target);
-				// exit(EXIT_FAILURE);
-				perror(redirect->target);
+				output_error(redirect->target);
+				// exit_from_child(EXIT_FAILURE);
 				exit(EXIT_FAILURE);
 			}
 			dup2(fd, STDOUT_FILENO);
@@ -224,15 +185,15 @@ static void	execute_CMD(t_cmd *cmd, t_ctx *ctx, int input_fd, int output_fd)
 			dup2(output_fd, STDOUT_FILENO);
 			close(output_fd);
 		}
-		// printf("execute_CMD\n"); fflush(stdout);
 		apply_redirect(cmd);
 		if (access(cmd->path, X_OK) != 0)
 		{
-
+			// exit_from_child(EXIT_CMD_NOT_FOUND);
 			exit(EXIT_CMD_NOT_FOUND);
 		}
 		// apply_redirect(cmd);
 		execve(cmd->path, cmd->argv, ctx->envp);
+		// exit_from_child(EXIT_FAILURE);
 		exit(EXIT_FAILURE); // execve failed
 	}
 	waitpid(pid, &status, 0);
@@ -289,17 +250,16 @@ void	execute_shell_node(t_ast_node *node, t_ctx *ctx, int input_fd,
 	}
 	else if (shell_node->type == NODE_REDIR_OUT)
 	{
-		// Implement output redirection handling
+
 	}
 	else if (shell_node->type == NODE_REDIR_APPEND)
 	{
-		// Implement append redirection handling
+
 	}
 	else if (shell_node->type == NODE_REDIR_HEREDOC)
 	{
-		// Implement heredoc handling
+
 	}
-	//  other node types
 }
 
 static void	execute_shell(t_shell *shell)
@@ -318,14 +278,13 @@ t_shell	*create_shell(char **envp)
 	shell = malloc(sizeof(t_shell));
 	if (!shell)
 		return (NULL);
-	ctx = malloc(sizeof(t_ctx));
+	ctx = create_ctx(envp);
 	if (!ctx)
 	{
 		free(shell);
 		return (NULL);
 	}
 	shell->ctx = ctx;
-	ctx->envp = envp;
 	shell->ast = create_ast_tree();
 	if (!shell->ast)
 	{

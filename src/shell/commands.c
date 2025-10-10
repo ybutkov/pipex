@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:51:24 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 18:09:43 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/10 16:12:35 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 
 
 static void	free_cmd(t_cmd *cmd);
+
+static void	free_redir_bridge(void *content)
+{
+	t_redir *redir;
+
+	if (!content)
+		return ;
+	redir = (t_redir *)content;
+	redir->free_redir(redir);
+}
 
 t_cmd	*create_cmd(char **argv, char *path)
 {
@@ -36,32 +46,10 @@ static void	free_cmd(t_cmd *cmd)
 	free_str_array(cmd->argv);
 	if (cmd->path)
 		free(cmd->path);
+	// if (0)
+	// 	free_redir_bridge(NULL);
 	if (cmd->redirs)
-		ft_lstclear(&cmd->redirs, free);
+		ft_lstclear(&cmd->redirs, free_redir_bridge);
 	free(cmd);
 }
 
-// static void	free_cmd(t_cmd *cmd)
-// {
-// 	int	i;
-
-// 	if (!cmd)
-// 		return ;
-// 	if (cmd->argv)
-// 	{
-// 		i = 0;
-// 		while (cmd->argv[i])
-// 		{
-// 			free(cmd->argv[i]);
-// 			i++;
-// 		}
-// 		free(cmd->argv);
-// 	}
-// 	if (cmd->path)
-// 		free(cmd->path);
-// 	if (cmd->redirs)
-// 	{
-// 		ft_lstclear(&cmd->redirs, free);
-// 	}
-// 	free(cmd);
-// }

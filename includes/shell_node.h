@@ -6,20 +6,14 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 20:03:14 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 15:39:25 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/10 13:29:51 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NODE_H
-# define NODE_H
+#ifndef SHELL_NODE_H
+# define SHELL_NODE_H
 
 # include "libft.h"
-
-typedef struct s_ctx
-{
-	char	**envp;
-	int		last_exit_status;
-}				t_ctx;
 
 typedef enum e_node_type
 {
@@ -42,10 +36,20 @@ typedef enum e_redir_type
 	REDIR_HEREDOC
 }					t_redir_type;
 
+typedef struct s_ctx
+{
+	char			**envp;
+	int				last_exit_status;
+
+	void			(*free_ctx)(struct s_ctx *ctx);
+}					t_ctx;
+
 typedef struct s_redir
 {
 	t_redir_type	type;
 	char			*target;
+
+	void			(*free_redir)(struct s_redir *redir);
 }					t_redir;
 
 typedef struct s_cmd
@@ -54,19 +58,19 @@ typedef struct s_cmd
 	char			*path;
 	t_list			*redirs;
 
-	void	(*free_cmd)(struct s_cmd *cmd);
+	void			(*free_cmd)(struct s_cmd *cmd);
 }					t_cmd;
 
 typedef struct s_shell_node
 {
 	t_node_type		type;
-	union u_data
+	union			u_data
 	{
 		t_cmd		*cmd;
 		t_redir		*redir;
 	} data;
-	
-	void	(*free)(struct s_shell_node *node);
+
+	void			(*free)(struct s_shell_node *node);
 }					t_shell_node;
 
 #endif
