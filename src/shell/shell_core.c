@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 20:08:36 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/10 20:20:45 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <sys/wait.h>
 
 
-void		execute_shell_node(t_ast_node *node, t_ctx *ctx, int input_fd,
+void		execute_shell_node(t_ast_node *node, t_shell *shell, int input_fd,
 				int output_fd);
 
 static void free_shell_node_bridge(void *content)
@@ -120,7 +120,7 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 	return (NULL);
 }
 
-static void	apply_redirect(t_cmd *cmd)
+static void	apply_redirect(t_cmd *cmd, t_shell *shell)
 {
 	t_list	*redir;
 	t_redir	*redirect;
@@ -141,6 +141,7 @@ static void	apply_redirect(t_cmd *cmd)
 			{
 				output_error(redirect->target);
 				// exit_from_child(EXIT_FAILURE);
+				shell->free(shell);
 				exit(EXIT_FAILURE);
 			}
 			dup2(fd, STDIN_FILENO);
@@ -153,6 +154,7 @@ static void	apply_redirect(t_cmd *cmd)
 			{
 				output_error(redirect->target);
 				// exit_from_child(EXIT_FAILURE);
+				shell->free(shell);
 				exit(EXIT_FAILURE);
 			}
 			dup2(fd, STDOUT_FILENO);
@@ -162,7 +164,7 @@ static void	apply_redirect(t_cmd *cmd)
 	}
 }
 
-static void	execute_CMD(t_cmd *cmd, t_ctx *ctx, int input_fd, int output_fd)
+static void	execute_CMD(t_cmd *cmd, t_shell *shell, int input_fd, int output_fd)
 {
 	pid_t	pid;
 	int		status;
@@ -185,19 +187,21 @@ static void	execute_CMD(t_cmd *cmd, t_ctx *ctx, int input_fd, int output_fd)
 			dup2(output_fd, STDOUT_FILENO);
 			close(output_fd);
 		}
-		apply_redirect(cmd);
+		apply_redirect(cmd, shell);
 		if (access(cmd->path, X_OK) != 0)
 		{
 			// exit_from_child(EXIT_CMD_NOT_FOUND);
+			shell->free(shell);
 			exit(EXIT_CMD_NOT_FOUND);
 		}
 		// apply_redirect(cmd);
-		execve(cmd->path, cmd->argv, ctx->envp);
+		execve(cmd->path, cmd->argv, shell->ctx->envp);
 		// exit_from_child(EXIT_FAILURE);
+		shell->free(shell);
 		exit(EXIT_FAILURE); // execve failed
 	}
 	waitpid(pid, &status, 0);
-	ctx->last_exit_status = WEXITSTATUS(status);
+	shell->ctx->last_exit_status = WEXITSTATUS(status);
 }
 
 // static void	execute_redir_in(t_ast_node *node, t_ctx *ctx, int input_fd,
@@ -221,7 +225,7 @@ static void	execute_CMD(t_cmd *cmd, t_ctx *ctx, int input_fd, int output_fd)
 // 	close(fd);
 // }
 
-void	execute_shell_node(t_ast_node *node, t_ctx *ctx, int input_fd,
+void	execute_shell_node(t_ast_node *node, t_shell *shell, int input_fd,
 		int output_fd)
 {
 	t_shell_node	*shell_node;
@@ -232,17 +236,17 @@ void	execute_shell_node(t_ast_node *node, t_ctx *ctx, int input_fd,
 	{
 		pipe(pipe_fds);
 		if (node->get_left(node))
-			execute_shell_node(node->get_left(node), ctx, input_fd,
+			execute_shell_node(node->get_left(node), shell, input_fd,
 				pipe_fds[1]);
 		close(pipe_fds[1]);
 		if (node->get_right(node))
-			execute_shell_node(node->get_right(node), ctx, pipe_fds[0],
+			execute_shell_node(node->get_right(node), shell, pipe_fds[0],
 				output_fd);
 		close(pipe_fds[0]);
 	}
 	else if (shell_node->type == NODE_CMD)
 	{
-		execute_CMD(shell_node->data.cmd, ctx, input_fd, output_fd);
+		execute_CMD(shell_node->data.cmd, shell, input_fd, output_fd);
 	}
 	else if (shell_node->type == NODE_REDIR_IN)
 	{
@@ -267,7 +271,7 @@ static void	execute_shell(t_shell *shell)
 	t_ast_node	*root;
 
 	root = shell->ast->get_root(shell->ast);
-	execute_shell_node(root, shell->ctx, STDIN_FILENO, STDOUT_FILENO);
+	execute_shell_node(root, shell, STDIN_FILENO, STDOUT_FILENO);
 }
 
 t_shell	*create_shell(char **envp)
