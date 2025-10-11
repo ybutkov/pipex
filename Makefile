@@ -68,3 +68,5 @@ $(LIBFT) :
 	@make -C $(LIBFT_DIR) all $(PRINT_FLAG)
 
 .PHONY : all clean fclean re bonus
+
+#valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all -s ./pipex "infiles/basic.txt" "nonexistingcommand" "cat -e" "outfiles/outfile"

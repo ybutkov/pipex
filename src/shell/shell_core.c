@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/11 17:56:39 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/11 19:47:30 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,14 +79,26 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 	i = 1;
 	while (i < argc - 1)
 	{
-		if (ft_strcmp(HERE_DOC, first_arg))
+		if (i == 1 && !ft_strcmp(HERE_DOC, first_arg))
 		{
-
+			char *delim = ft_strdup(commands[i]);
+			redirect = create_redir(REDIR_HEREDOC, delim);
+			node = create_shell_node(NODE_REDIR_HEREDOC, redirect);
+			ast_node = create_ast_node(node);
+			curr_node->set_left(curr_node, ast_node);
+			i++;
+			cmd_argv = ft_split(commands[i], ' ');
+			full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
+			cmd = create_cmd(cmd_argv, full_path);
+			node = create_shell_node(NODE_CMD, cmd);
+			ast_node->set_left(ast_node, create_ast_node(node));
+			i++;
+			continue ;
 		}
 
 		cmd_argv = ft_split(commands[i], ' ');
 		if (!cmd_argv)
-			continue;
+			continue ;
 		full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
 		cmd = create_cmd(cmd_argv, full_path);
 		node = create_shell_node(NODE_CMD, cmd);
@@ -97,9 +109,13 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 			node->data.cmd->redirs = ft_lstnew(redirect);
 		}
 
+
 		if (i == argc - 2)
 		{
-			redirect = create_redir(REDIR_OUT, ft_strdup(commands[argc - 1]));
+			if (!ft_strcmp(HERE_DOC, first_arg))
+				redirect = create_redir(REDIR_APPEND, ft_strdup(commands[argc - 1]));
+			else
+				redirect = create_redir(REDIR_OUT, ft_strdup(commands[argc - 1]));
 			redir = ft_lstnew(redirect);
 			if (node->data.cmd->redirs)
 				ft_lstadd_back(&node->data.cmd->redirs, redir);
@@ -122,7 +138,8 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 		}
 		i++;
 	}
-
+	if (!ft_strcmp(HERE_DOC, first_arg))
+		free(first_arg);
 	return (NULL);
 }
 
@@ -257,14 +274,17 @@ int	is_delimiter(char *line, char *delimeter)
 	char *new_line_char;
 
 	new_line_char = ft_strchr(line, '\n');
+	// printf("%s >%c<", line, *new_line_char); fflush(stdout);
 	if (new_line_char)
-		new_line_char[0] = '\0';
-	if (ft_strcmp(line, delimeter))
+		*new_line_char = '\0';
+	if (ft_strcmp(line, delimeter) == 0)
 	{
 		if (new_line_char)
-			new_line_char[0] = '\n';
+			*new_line_char = '\n';
 		return (1);
 	}
+	if (new_line_char)
+		*new_line_char = '\n';
 	return (0);
 }
 
@@ -379,7 +399,7 @@ int	execute_shell_node(t_ast_node *node, t_shell *shell, int in_fd,
 	}
 	else if (shell_node->type == NODE_REDIR_HEREDOC)
 	{
-		execute_redir_heredoc(node, shell, in_fd, out_fd);
+		return (execute_redir_heredoc(node, shell, in_fd, out_fd));
 	}
 	return (1);
 }
