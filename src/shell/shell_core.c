@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/11 19:47:30 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/11 20:10:39 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,13 +238,9 @@ static int	execute_CMD(t_cmd *cmd, t_shell *shell, int input_fd, int output_fd)
 	}
 	else
 	{
-		if (input_fd != STDIN_FILENO)
-			close(input_fd);
-		if (output_fd != STDOUT_FILENO)
-			close(output_fd);
 		waitpid(pid, &status, 0);
 		shell->ctx->last_exit_status = WEXITSTATUS(status);
-		return (status);
+		return (WEXITSTATUS(status));
 	}
 }
 
