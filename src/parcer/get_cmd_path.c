@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 16:25:19 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/04 17:13:55 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 21:09:21 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,75 @@
 static void	ft_free_split(char **arr);
 static char	*check_full_path(char *dir, char *cmd);
 
-char	*get_cmd_path(char *cmd, char **envp)
+static char	*default_getenv(void)
+{
+	return (ft_strdup("PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:\
+		/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:"));
+}
+
+static char	*get_full_path(char *cmd, char *env_paths)
 {
 	char	*full_path;
 	char	**paths;
 	char	**all_paths;
 
+	all_paths = ft_split(env_paths, ':');
+	if (!all_paths)
+		return (NULL);
+	paths = all_paths;
+	while (*paths)
+	{
+		full_path = check_full_path(*paths, cmd);
+		if (full_path)
+			return (ft_free_split(all_paths), full_path);
+		paths++;
+	}
+	ft_free_split(all_paths);
+	return (NULL);
+}
+
+char	*get_cmd_path(char *cmd, char **envp)
+{
+
 	while (*envp)
 	{
 		if (ft_strncmp(*envp, "PATH=", 5) == 0)
-		{
-			all_paths = ft_split((*envp + 5), ':');
-			if (!all_paths)
-				return (NULL);
-			paths = all_paths;
-			while (*paths)
-			{
-				full_path = check_full_path(*paths, cmd);
-				if (full_path)
-					return (ft_free_split(all_paths), full_path);
-				paths++;
-			}
-			ft_free_split(all_paths);
-			break ;
-		}
+			return (get_full_path(cmd, (*envp + 5)));
 		envp++;
 	}
-	return (NULL);
+	return (get_full_path(cmd, default_getenv()));
 }
+
+
+
+// char	*get_cmd_path(char *cmd, char **envp)
+// {
+// 	char	*full_path;
+// 	char	**paths;
+// 	char	**all_paths;
+
+// 	while (*envp)
+// 	{
+// 		if (ft_strncmp(*envp, "PATH=", 5) == 0)
+// 		{
+// 			all_paths = ft_split((*envp + 5), ':');
+// 			if (!all_paths)
+// 				return (NULL);
+// 			paths = all_paths;
+// 			while (*paths)
+// 			{
+// 				full_path = check_full_path(*paths, cmd);
+// 				if (full_path)
+// 					return (ft_free_split(all_paths), full_path);
+// 				paths++;
+// 			}
+// 			ft_free_split(all_paths);
+// 			break ;
+// 		}
+// 		envp++;
+// 	}
+// 	return (NULL);
+// }
 
 static void	ft_free_split(char **paths)
 {
