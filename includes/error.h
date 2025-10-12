@@ -6,13 +6,13 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:55:18 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/08 17:55:50 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 20:29:16 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ERROR_H
 # define ERROR_H
 
-void	output_error(const char *message);
+void	output_error(const char *obj, char *error);
 
 #endif

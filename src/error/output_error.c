@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 17:43:42 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 12:41:06 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 20:32:34 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,15 @@
 #include <errno.h>
 #include <unistd.h>
 
-void output_error(const char *message)
+void output_error(const char *obj, char *error)
 {
 	write(STDERR_FILENO, PIPEX, ft_strlen(PIPEX));
-	write(STDERR_FILENO, strerror(errno), ft_strlen(strerror(errno)));
+	if (!error)
+		write(STDERR_FILENO, strerror(errno), ft_strlen(strerror(errno)));
+	else
+		write(STDERR_FILENO, error, ft_strlen(error));
 	write(STDERR_FILENO, COLON, ft_strlen(COLON));
-	write(STDERR_FILENO, message, ft_strlen(message));
+	write(STDERR_FILENO, obj, ft_strlen(obj));
+	write(STDERR_FILENO, "\n", 1);
 	// printf("%s%s%s\n", PIPEX, strerror(errno), message);
 }

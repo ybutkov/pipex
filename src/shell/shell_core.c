@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 19:39:20 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 20:31:59 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ static void	apply_redirect(t_cmd *cmd, t_shell *shell)
 			fd = open(redirect->target, O_RDONLY);
 			if (fd == -1)
 			{
-				output_error(redirect->target);
+				output_error(redirect->target, NULL);
 				// exit_from_child(EXIT_FAILURE);
 				shell->free(shell);
 				exit(EXIT_FAILURE);
@@ -184,7 +184,7 @@ static void	apply_redirect(t_cmd *cmd, t_shell *shell)
 			fd = open(redirect->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd == -1)
 			{
-				output_error(redirect->target);
+				output_error(redirect->target, NULL);
 				// exit_from_child(EXIT_FAILURE);
 				shell->free(shell);
 				exit(EXIT_FAILURE);
@@ -201,7 +201,7 @@ static void	apply_redirect(t_cmd *cmd, t_shell *shell)
 			fd = open(redirect->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (fd == -1)
 			{
-				output_error(redirect->target);
+				output_error(redirect->target, NULL);
 				shell->free(shell);
 				exit(EXIT_FAILURE);
 			}
@@ -241,6 +241,7 @@ static int	execute_CMD(t_cmd *cmd, t_shell *shell, int input_fd, int output_fd)
 		apply_redirect(cmd, shell);
 		if (!cmd->path || access(cmd->path, X_OK) != 0)
 		{
+			output_error(cmd->argv[0], "command not found");
 			shell->free(shell);
 			exit(EXIT_CMD_NOT_FOUND);
 		}
