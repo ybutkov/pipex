@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/11 20:10:39 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 12:39:44 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,9 @@ static int	execute_CMD(t_cmd *cmd, t_shell *shell, int input_fd, int output_fd)
 			dup2(output_fd, STDOUT_FILENO);
 			close(output_fd);
 		}
+		// close(STDIN_FILENO);
+		// close(STDOUT_FILENO);
+
 		apply_redirect(cmd, shell);
 		if (!cmd->path || access(cmd->path, X_OK) != 0)
 		{
@@ -238,6 +241,10 @@ static int	execute_CMD(t_cmd *cmd, t_shell *shell, int input_fd, int output_fd)
 	}
 	else
 	{
+		if (input_fd != STDIN_FILENO)
+			close(input_fd);
+		if (output_fd != STDOUT_FILENO)
+			close(output_fd);
 		waitpid(pid, &status, 0);
 		shell->ctx->last_exit_status = WEXITSTATUS(status);
 		return (WEXITSTATUS(status));
@@ -270,7 +277,6 @@ int	is_delimiter(char *line, char *delimeter)
 	char *new_line_char;
 
 	new_line_char = ft_strchr(line, '\n');
-	// printf("%s >%c<", line, *new_line_char); fflush(stdout);
 	if (new_line_char)
 		*new_line_char = '\0';
 	if (ft_strcmp(line, delimeter) == 0)
@@ -307,12 +313,13 @@ static void collect_heredoc_input(char *target, int write_fd)
 int	execute_redir_heredoc(t_ast_node *ast_node, t_shell *shell, int in_fd,
 		int old_fd_out)
 {
+	t_shell_node *node;
 	int heredoc_pipe[2];
 	pid_t pid_writer;
 	int status;
 	int ret_code = 1;
 
-	t_shell_node *node = (t_shell_node *)ast_node->get_content(ast_node);
+	node = (t_shell_node *)ast_node->get_content(ast_node);
 	(void)in_fd;
 
 	if (pipe(heredoc_pipe) == -1)
@@ -326,32 +333,18 @@ int	execute_redir_heredoc(t_ast_node *ast_node, t_shell *shell, int in_fd,
 	}
 	if (pid_writer == 0)
 	{
-		// --- ПРОЦЕСС WRITER ---       
-		// Закрываем конец чтения
 		close(heredoc_pipe[0]);
-
-		// [ВАША ФУНКЦИЯ]: Сбор текста с терминала и запись в pipe[1] 
 		collect_heredoc_input(node->data.redir->target, heredoc_pipe[1]);
-		// Закрываем конец записи
 		close(heredoc_pipe[1]);
 		shell->free(shell);
 		exit(EXIT_SUCCESS);
 	}
 	else
 	{
-// --- РОДИТЕЛЬСКИЙ ПРОЦЕСС (ШЕЛЛ) ---               
-// 1. Закрыть конец записи в РОДИТЕЛЕ (Предотвращение зависания)
 		close(heredoc_pipe[1]);
-		// 2. Ждать завершения Writer'а       
 		waitpid(pid_writer, &status, 0);
-// 3. Рекурсивный вызов для потомка
-// old_fd_in игнорируется. 
 		ret_code = execute_shell_node(ast_node->get_left(ast_node), shell,
-// Новый fd_in (конец чтения пайпа) 
-			heredoc_pipe[0],
-			// Старый fd_out
-			old_fd_out);
-// 4. Закрыть конец чтения
+			heredoc_pipe[0], old_fd_out);
 		close(heredoc_pipe[0]);
 		return (ret_code);
 	}
@@ -367,14 +360,43 @@ int	execute_shell_node(t_ast_node *node, t_shell *shell, int in_fd,
 	shell_node = (t_shell_node *)node->get_content(node);
 	if (shell_node->type == NODE_PIPE)
 	{
-		pipe(pipe_fds);
-		if (node->get_left(node))
-			execute_shell_node(node->get_left(node), shell, in_fd, pipe_fds[1]);
+		if (pipe(pipe_fds) == -1)
+		{
+			perror("pipe");
+			return (EXIT_FAILURE);
+		}
+		
+		pid_t left_pid = fork();
+		if (left_pid == -1)
+		{
+			perror("fork");
+			close(pipe_fds[0]);
+			close(pipe_fds[1]);
+			return (EXIT_FAILURE);
+		}
+		
+		if (left_pid == 0)
+		{
+			// Child process for left side
+			close(pipe_fds[0]);
+			if (node->get_left(node))
+				execute_shell_node(node->get_left(node), shell, in_fd, pipe_fds[1]);
+			close(pipe_fds[1]);
+			shell->free(shell);
+			exit(EXIT_SUCCESS);
+		}
+		
+		// Parent continues with right side
 		close(pipe_fds[1]);
 		if (node->get_right(node))
 			status_code = execute_shell_node(node->get_right(node), shell,
 				pipe_fds[0], out_fd);
 		close(pipe_fds[0]);
+		
+		// Wait for left child
+		int left_status;
+		waitpid(left_pid, &left_status, 0);
+		
 		return (status_code);
 	}
 	else if (shell_node->type == NODE_CMD)

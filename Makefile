@@ -41,6 +41,7 @@ C_OBJ_FIlES =	$(C_FIlES:%.c=$(BUILD_DIR)/%.o)
 BUILD_DIRS := $(sort $(dir $(C_OBJ_FIlES)))
 
 all : $(NAME)
+bonus : all
 
 ${NAME} : $(LIBFT) $(BUILD_DIRS) $(C_OBJ_FIlES)
 	@$(CC) $(CFLAGS) $(C_OBJ_FIlES) $(NAME_C) $(LFLAGS) -o $(NAME)

@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:10:57 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/11 20:10:54 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 14:23:06 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ int	main(int argc, char **argv, char **envp)
 
 	shell = create_shell(envp);
 	shell->build(shell, commands, param_count);
+	free_str_array(commands);
 	shell->execute(shell);
 	exit_status = shell->ctx->last_exit_status;
-	
-	free_str_array(commands);
+	// free_str_array(commands);
 	shell->free(shell);
 
 	// printf("Exit status: %d\n", exit_status);
