@@ -4,5 +4,7 @@
 *.out
 *.dSYM/
 */build/*
+input
+output
 infiles/
 outfiles/

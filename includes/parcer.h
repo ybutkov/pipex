@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   parcer.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 19:13:29 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/12 16:53:25 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/12 18:15:30 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PARCER_H
+# define PARCER_H
 
-# define WHICH_CMD "/usr/bin/which"
-# define HERE_DOC "here_doc"
-# define PIPEX "pipex: "
-# define COLON ": "
-# define EXIT_CMD_NOT_FOUND 127
+# define SINGLE_QUOTE '\''
+# define DOUNLE_QUOTE '\"'
+# define QUOTES "\'\""
+# define SPACES " \t\n\r\v\f"
+# define SPECIAL_CHARS "<>|&"
 
-char	*get_cmd_path(char *cmd, char **envp);
-char	**parse_command(char *command);
-void	free_str_array(char **arr);
-int		exit_from_child(int status_code);
+typedef enum s_token_type
+{
+	TOKEN_WORD,
+	TOKEN_END
+}					t_token_type;
+
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+}					t_token;
+
+t_token				*create_token(t_token_type type, char *value);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 14:33:05 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 19:39:20 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "shell.h"
 #include "error.h"
 #include "utils.h"
+#include "parcer.h"
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -53,6 +54,12 @@ static void	free_shell(t_shell *shell)
 
 #include <stdio.h>
 
+char	**split_command(char *command)
+{
+	return (parse_command(command));
+	// return (ft_split(command, ' '));
+}
+
 static void	*build_shell(t_shell *shell, char **commands, int argc)
 {
 	t_shell_node	*node;
@@ -87,7 +94,8 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 			ast_node = create_ast_node(node);
 			curr_node->set_left(curr_node, ast_node);
 			i++;
-			cmd_argv = ft_split(commands[i], ' ');
+			// cmd_argv = ft_split(commands[i], ' ');
+			cmd_argv = split_command(commands[i]);
 			full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
 			cmd = create_cmd(cmd_argv, full_path);
 			node = create_shell_node(NODE_CMD, cmd);
@@ -96,7 +104,8 @@ static void	*build_shell(t_shell *shell, char **commands, int argc)
 			continue ;
 		}
 
-		cmd_argv = ft_split(commands[i], ' ');
+		// cmd_argv = ft_split(commands[i], ' ');
+		cmd_argv = split_command(commands[i]);
 		if (!cmd_argv)
 			continue ;
 		full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);

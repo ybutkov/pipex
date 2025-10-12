@@ -6,28 +6,39 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:10:57 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 14:23:06 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 19:37:24 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include "ast.h"
 #include "shell.h"
-
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-void	execute_cmd(char *cmd_with_args[]);
-void	handle_error(const char *msg);
-
 // Заглушка для примера
 void	handle_error(const char *msg)
 {
 	perror(msg);
 	exit(EXIT_FAILURE);
+}
+
+char	*collect_args(int argc, char **argv)
+{
+	char	*res;
+	int		i;
+
+	i = 1;
+
+	while(i < argc)
+	{
+		res = ft_strjoin(res, argv[i]);
+		i++;
+	}
+	return (res);
 }
 
 int	main(int argc, char **argv, char **envp)
