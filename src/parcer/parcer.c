@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:07:34 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 19:50:56 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 20:14:53 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*get_word(char **str)
 			break ;
 		(*str)++;
 	}
+	if (in_set(*start, QUOTES))
+		return (ft_substr(start, 1, *str - start - 2));
 	return (ft_substr(start, 0, *str - start));
 }
 
