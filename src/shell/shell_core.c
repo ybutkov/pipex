@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 12:39:44 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/12 14:33:05 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,12 +360,13 @@ int	execute_shell_node(t_ast_node *node, t_shell *shell, int in_fd,
 	shell_node = (t_shell_node *)node->get_content(node);
 	if (shell_node->type == NODE_PIPE)
 	{
+		status_code = 0;
 		if (pipe(pipe_fds) == -1)
 		{
 			perror("pipe");
 			return (EXIT_FAILURE);
 		}
-		
+
 		pid_t left_pid = fork();
 		if (left_pid == -1)
 		{
@@ -374,7 +375,7 @@ int	execute_shell_node(t_ast_node *node, t_shell *shell, int in_fd,
 			close(pipe_fds[1]);
 			return (EXIT_FAILURE);
 		}
-		
+
 		if (left_pid == 0)
 		{
 			// Child process for left side
@@ -385,18 +386,18 @@ int	execute_shell_node(t_ast_node *node, t_shell *shell, int in_fd,
 			shell->free(shell);
 			exit(EXIT_SUCCESS);
 		}
-		
+
 		// Parent continues with right side
 		close(pipe_fds[1]);
 		if (node->get_right(node))
 			status_code = execute_shell_node(node->get_right(node), shell,
 				pipe_fds[0], out_fd);
 		close(pipe_fds[0]);
-		
+
 		// Wait for left child
 		int left_status;
 		waitpid(left_pid, &left_status, 0);
-		
+
 		return (status_code);
 	}
 	else if (shell_node->type == NODE_CMD)
