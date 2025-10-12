@@ -1,0 +1,355 @@
+============================================================================
+
+
+      BASIC TEST
+      NUMBER 5
+      < input grep Hello | awk '{count++} END {print count}' > output
+
+
+ - Bash output file:
+2
+\EOF
+
+ - Pipex output file: Empty
+
+ - Bash standard stream: None
+
+ - Pipex standard stream:
+awk: syntax error at source line 1
+ context is
+	 >>> ' <<< 
+awk: bailing out at source line 1
+\EOF
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 2
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      BASIC TEST
+      NUMBER 6
+      < input grep Hello | awk "{count++} END {print count}" > output
+
+
+ - Bash output file:
+2
+\EOF
+
+ - Pipex output file: Empty
+
+ - Bash standard stream: None
+
+ - Pipex standard stream:
+awk: non-terminated string {count++}... at source line 1
+ context is
+	 >>>  <<< 
+awk: giving up
+ source line number 2
+\EOF
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 2
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      BASIC TEST
+      NUMBER 7
+      < input grep Hello | awk '"{count++} END {print count}"' > output
+
+
+ - Bash output file:
+Hello World!
+Hello World!
+\EOF
+
+ - Pipex output file: Empty
+
+ - Bash standard stream: None
+
+ - Pipex standard stream:
+awk: syntax error at source line 1
+ context is
+	 >>> ' <<< 
+awk: bailing out at source line 1
+\EOF
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 2
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      BASIC TEST
+      NUMBER 8
+      < input grep Hello | awk "'{count++} END {print count}'" > output
+
+
+ - Bash output file: Empty
+
+ - Pipex output file: Empty
+
+ - Bash standard stream:
+awk: syntax error at source line 1
+ context is
+	 >>> ' <<< 
+awk: bailing out at source line 1
+\EOF
+
+ - Pipex standard stream:
+awk: non-terminated string '{count++}... at source line 1
+ context is
+	 >>>  <<< 
+awk: giving up
+ source line number 2
+\EOF
+
+ - Bash exit code value: 2
+
+ - Pipex exit code value: 2
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      ERROR TEST
+      NUMBER 1
+      < input grep Hello | wc -l > output
+
+
+ - Bash output file:
+       0
+\EOF
+
+ - Pipex output file:
+       0
+\EOF
+
+ - Bash standard stream:
+pipex: input: No such file or directory
+\EOF
+
+ - Pipex standard stream:
+pipex: No such file or directory: input\EOF
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 0
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      ERROR TEST
+      NUMBER 2
+      < input grep Hello | wc -l > output (No environment)
+
+
+ - Bash output file:
+       1
+\EOF
+
+ - Pipex output file: Empty
+
+ - Bash standard stream: None
+
+ - Pipex standard stream: None
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 127
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      ERROR TEST
+      NUMBER 3
+      < input fizzBuzz | ls -l src/ > output
+
+
+ - Bash output file:
+total 56
+-rw-r--r--  1 ybutkov  2025_heilbronn  4652 Jul  9 14:26 main.c
+-rw-r--r--  1 ybutkov  2025_heilbronn   833 Jul  9 14:26 runTest.c
+-rw-r--r--  1 ybutkov  2025_heilbronn  8583 Jul  9 14:26 test.c
+-rw-r--r--  1 ybutkov  2025_heilbronn   427 Jul  9 14:26 utils.c
+\EOF
+
+ - Pipex output file:
+total 56
+-rw-r--r--  1 ybutkov  2025_heilbronn  4652 Jul  9 14:26 main.c
+-rw-r--r--  1 ybutkov  2025_heilbronn   833 Jul  9 14:26 runTest.c
+-rw-r--r--  1 ybutkov  2025_heilbronn  8583 Jul  9 14:26 test.c
+-rw-r--r--  1 ybutkov  2025_heilbronn   427 Jul  9 14:26 utils.c
+\EOF
+
+ - Bash standard stream:
+pipex: fizzBuzz: command not found
+\EOF
+
+ - Pipex standard stream: None
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 0
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      ERROR TEST
+      NUMBER 4
+      < input ls -l src/ | buzzFizz > output
+
+
+ - Bash output file: Empty
+
+ - Pipex output file: Empty
+
+ - Bash standard stream:
+pipex: buzzFizz: command not found
+\EOF
+
+ - Pipex standard stream: None
+
+ - Bash exit code value: 127
+
+ - Pipex exit code value: 127
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      ERROR TEST
+      NUMBER 5
+      < input fizzBuzz | wc -l > output (No environment)
+
+
+ - Bash output file:
+       0
+\EOF
+
+ - Pipex output file: Empty
+
+ - Bash standard stream:
+pipex: fizzBuzz: command not found
+\EOF
+
+ - Pipex standard stream: None
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 127
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      ERROR TEST
+      NUMBER 6
+      < input grep Hello | buzzFizz > output (No environment)
+
+
+ - Bash output file: Empty
+
+ - Pipex output file: Empty
+
+ - Bash standard stream:
+pipex: buzzFizz: command not found
+\EOF
+
+ - Pipex standard stream: None
+
+ - Bash exit code value: 127
+
+ - Pipex exit code value: 127
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      MULTIPLE COMMAND TEST
+      NUMBER 2
+      < input tr -d ! | grep -v ! | sed 's/Hello/Salut/g' > output
+
+
+ - Bash output file:
+Salut World
+Salut World
+Salut World
+Salut World
+Salut World
+\EOF
+
+ - Pipex output file: Empty
+
+ - Bash standard stream: None
+
+ - Pipex standard stream:
+sed: 1: "'s/Hello/Salut/g'": invalid command code '
+\EOF
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 1
+
+File permissions of output files match
+
+
+============================================================================
+
+
+      MULTIPLE COMMAND TEST
+      NUMBER 3
+      < input tr -d ! | grep -v ! | sed 's/Hello/Salut/g' | grep Salut | wc -l > output
+
+
+ - Bash output file:
+       5
+\EOF
+
+ - Pipex output file:
+       0
+\EOF
+
+ - Bash standard stream: None
+
+ - Pipex standard stream:
+sed: 1: "'s/Hello/Salut/g'": invalid command code '
+\EOF
+
+ - Bash exit code value: 0
+
+ - Pipex exit code value: 0
+
+File permissions of output files match
+
+
