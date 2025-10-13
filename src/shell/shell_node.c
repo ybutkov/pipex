@@ -6,43 +6,19 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:00:19 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 16:13:00 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:15:28 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-// static void free_shell_node(t_shell_node *node)
-// {
-// 	if (!node)
-// 		return ;
-// 	if (node->type == NODE_CMD && node->data.cmd)
-// 	{
-// 		if (node->data.cmd->free_cmd)
-// 			node->data.cmd->free_cmd(node->data.cmd);
-// 		else
-// 			free(node->data.cmd);
-// 	}
-// 	else if ((node->type == NODE_REDIR_IN || node->type == NODE_REDIR_OUT
-// 			|| node->type == NODE_REDIR_APPEND
-// 			|| node->type == NODE_REDIR_HEREDOC)
-// 		&& node->data.redir)
-// 	{
-// 		if (node->data.redir->target)
-// 			free(node->data.redir->target);
-// 		free(node->data.redir);
-// 	}
-// 	free(node);
-// }
-
-static void free_shell_node(t_shell_node *node)
+static void	free_shell_node(t_shell_node *node)
 {
 	if (!node)
 		return ;
 	if (node->type == NODE_CMD && node->data.cmd)
 	{
 		node->data.cmd->free_cmd(node->data.cmd);
-
 	}
 	else if (node->type == NODE_SUBSHELL)
 	{
@@ -52,17 +28,14 @@ static void free_shell_node(t_shell_node *node)
 			|| node->type == NODE_REDIR_HEREDOC)
 		&& node->data.redir)
 	{
-		// if (node->data.redir->target)
-		// 	free(node->data.redir->target);
-		// free(node->data.redir);
 		node->data.redir->free_redir(node->data.redir);
 	}
 	free(node);
 }
 
-t_shell_node *create_shell_node(t_node_type type, void *data)
+t_shell_node	*create_shell_node(t_node_type type, void *data)
 {
-	t_shell_node *node;
+	t_shell_node	*node;
 
 	node = malloc(sizeof(t_shell_node));
 	if (!node)
@@ -80,6 +53,3 @@ t_shell_node *create_shell_node(t_node_type type, void *data)
 	node->free = free_shell_node;
 	return (node);
 }
-
-
-

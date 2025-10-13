@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 17:27:06 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 19:45:50 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:24:05 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ typedef struct s_ast
 {
 	t_ast_node			*root;
 
-	void				(*free)(struct s_ast *ast, void (*free_content)(void *));
-	void				(*set_root)(struct s_ast *ast,
-			t_ast_node *root);
+	void				(*free)(struct s_ast *ast,
+			void (*free_content)(void *));
+	void				(*set_root)(struct s_ast *ast, t_ast_node *root);
 	t_ast_node			*(*get_root)(struct s_ast *ast);
 }						t_ast;
 
@@ -48,4 +48,3 @@ t_ast					*create_ast_tree(void);
 t_ast_node				*create_ast_node(void *content);
 
 #endif
-

@@ -6,18 +6,18 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:51:24 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 16:12:35 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 17:54:57 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
-
+#include "shell_internal.h"
 
 static void	free_cmd(t_cmd *cmd);
 
 static void	free_redir_bridge(void *content)
 {
-	t_redir *redir;
+	t_redir	*redir;
 
 	if (!content)
 		return ;
@@ -39,6 +39,18 @@ t_cmd	*create_cmd(char **argv, char *path)
 	return (cmd);
 }
 
+t_cmd	*create_cmd_from_raw_str(char *raw_command, t_shell *shell)
+{
+	char	**cmd_argv;
+	char	*full_path;
+
+	cmd_argv = parse_command(raw_command);
+	if (!cmd_argv)
+		return (NULL);
+	full_path = get_cmd_path(cmd_argv[0], shell->ctx->envp);
+	return (create_cmd(cmd_argv, full_path));
+}
+
 static void	free_cmd(t_cmd *cmd)
 {
 	if (!cmd)
@@ -46,10 +58,7 @@ static void	free_cmd(t_cmd *cmd)
 	free_str_array(cmd->argv);
 	if (cmd->path)
 		free(cmd->path);
-	// if (0)
-	// 	free_redir_bridge(NULL);
 	if (cmd->redirs)
 		ft_lstclear(&cmd->redirs, free_redir_bridge);
 	free(cmd);
 }
-

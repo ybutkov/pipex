@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 13:20:27 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 16:12:27 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 17:41:02 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ static void	free_redir_content(t_redir *redir)
 	free(redir);
 }
 
-t_redir *create_redir(t_redir_type type, char *target)
+t_redir	*create_redir(t_redir_type type, char *target)
 {
-	t_redir *redir;
+	t_redir	*redir;
 
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
 		return (NULL);
 	redir->type = type;
-	redir->target = target;
+	redir->target = ft_strdup(target);
 	if (!redir->target)
 	{
 		free(redir);

@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 15:52:10 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 20:58:06 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:13:28 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ t_ctx	*create_ctx(char **envp)
 	ctx = malloc(sizeof(t_ctx));
 	if (!ctx)
 		return (NULL);
-
 	ctx->envp = apply_func_to_array(envp, ft_strdup);
 	ctx->last_exit_status = 0;
 	ctx->free_ctx = free_ctx_content;

@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:07:34 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 20:14:53 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:22:35 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ char	*get_word(char **str)
 			quote = **str;
 		else if (quote && quote == **str)
 			quote = 0;
-		else if (!quote
-			&& (in_set(**str, SPECIAL_CHARS) || in_set(**str, SPACES)))
+		else if (!quote && (in_set(**str, SPECIAL_CHARS) || in_set(**str,
+					SPACES)))
 			break ;
 		(*str)++;
 	}
@@ -51,7 +51,7 @@ char	*get_word(char **str)
 	return (ft_substr(start, 0, *str - start));
 }
 
-void skip_spaces(char **str)
+void	skip_spaces(char **str)
 {
 	while (**str && in_set(**str, SPACES))
 		(*str)++;
@@ -62,7 +62,6 @@ t_token	*tokenize(char *input)
 	t_token	*head;
 	t_token	*curr_token;
 	t_token	*token;
-	char	*word;
 
 	head = NULL;
 	curr_token = NULL;
@@ -77,10 +76,7 @@ t_token	*tokenize(char *input)
 			continue ;
 		}
 		else
-		{
-			word = get_word(&input);
-			token = create_token(TOKEN_WORD, word);
-		}
+			token = create_token(TOKEN_WORD, get_word(&input));
 		if (!head)
 			head = token;
 		else
@@ -92,10 +88,11 @@ t_token	*tokenize(char *input)
 
 char	**parse_command(char *command)
 {
-	t_token		*token;
-	t_token 	*temp;
-	int			token_count;
-	char		**res;
+	t_token	*token;
+	t_token	*temp;
+	int		token_count;
+	char	**res;
+	int		i;
 
 	token = tokenize(command);
 	token_count = 0;
@@ -107,7 +104,7 @@ char	**parse_command(char *command)
 	}
 	res = malloc((token_count + 1) * sizeof(char *));
 	res[token_count] = NULL;
-	int i = 0;
+	i = 0;
 	while (token)
 	{
 		res[i++] = token->value;
@@ -117,39 +114,3 @@ char	**parse_command(char *command)
 	}
 	return (res);
 }
-
-// char	**parse_command(char *command)
-// {
-// 	char **cmd_argv;
-// 	char *str;
-// 	char *comm;
-
-// 	str = ft_strtrim(command, " ");
-// 	if (!str)
-// 		return (NULL);
-// 	if (ft_strlen(str) == 0)
-// 		return (free(str), NULL);
-// 	comm = ft_strchr(str, ' ');
-// 	if (comm)
-// 	{
-// 		*comm = '\0';
-// 		comm = ft_strtrim((const char *)(comm + 1), " ");
-// 		if (!comm)
-// 			return (free(str), NULL);
-// 		cmd_argv = malloc(3 * sizeof(char *));
-// 		if (!cmd_argv)
-// 			return (free(str), free(comm), NULL);
-// 		cmd_argv[2] = NULL;
-// 		cmd_argv[1] = comm;
-// 	}
-// 	else
-// 	{
-// 		cmd_argv = malloc(2 * sizeof(char *));
-// 		if (!cmd_argv)
-// 			return (free(str), NULL);
-// 		cmd_argv[1] = NULL;
-// 	}
-// 	cmd_argv[0] = str;
-// 	return (cmd_argv);
-// }
-

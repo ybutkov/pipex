@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/12 19:13:29 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:11:36 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,5 @@
 char	*get_cmd_path(char *cmd, char **envp);
 char	**parse_command(char *command);
 void	free_str_array(char **arr);
-int		exit_from_child(int status_code);
 
 #endif

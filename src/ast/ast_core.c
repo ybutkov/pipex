@@ -6,14 +6,14 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 17:29:26 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/09 16:25:56 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:15:57 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ast.h"
 #include <stdlib.h>
 
-static void free_ast_node(t_ast_node *node, void (*free_content)(void *))
+static void	free_ast_node(t_ast_node *node, void (*free_content)(void *))
 {
 	if (!node)
 		return ;
@@ -26,12 +26,11 @@ static void free_ast_node(t_ast_node *node, void (*free_content)(void *))
 	free(node);
 }
 
-static void free_ast(t_ast *ast, void (*free_content)(void *))
+static void	free_ast(t_ast *ast, void (*free_content)(void *))
 {
 	if (!ast)
 		return ;
 	free_ast_node(ast->root, free_content);
-
 	free(ast);
 }
 

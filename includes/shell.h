@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:16:54 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 16:21:00 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 17:58:04 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@ typedef struct s_shell
 	t_ast		*ast;
 	t_ctx		*ctx;
 
-	void		*(*build)(struct s_shell *shell, char **commands, int argc);
+	void		(*build)(struct s_shell *shell, char **commands, int argc);
 	void		(*free)(struct s_shell *shell);
 	void		(*execute)(struct s_shell *shell);
 }				t_shell;
 
 t_shell			*create_shell(char **envp);
 t_cmd			*create_cmd(char **argv, char *path);
+t_cmd			*create_cmd_from_raw_str(char *raw_command, t_shell *shell);
 t_shell_node	*create_shell_node(t_node_type type, void *data);
 t_redir			*create_redir(t_redir_type type, char *target);
 t_ctx			*create_ctx(char **envp);

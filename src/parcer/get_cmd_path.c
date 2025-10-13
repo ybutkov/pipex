@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 16:25:19 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/13 13:36:22 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:17:04 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static char	*check_full_path(char *dir, char *cmd);
 
 static char	*default_getenv(void)
 {
-	return (ft_strdup(""));
 	return (ft_strdup("PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:\
 		/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:"));
 }
@@ -46,7 +45,6 @@ static char	*get_full_path(char *cmd, char *env_paths)
 
 char	*get_cmd_path(char *cmd, char **envp)
 {
-
 	while (*envp)
 	{
 		if (ft_strncmp(*envp, "PATH=", 5) == 0)
@@ -55,8 +53,6 @@ char	*get_cmd_path(char *cmd, char **envp)
 	}
 	return (get_full_path(cmd, default_getenv()));
 }
-
-
 
 // char	*get_cmd_path(char *cmd, char **envp)
 // {

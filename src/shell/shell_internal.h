@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit_from_child.c                                  :+:      :+:    :+:   */
+/*   shell_internal.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/10 19:24:14 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/10 19:54:18 by ybutkov          ###   ########.fr       */
+/*   Created: 2025/10/13 14:32:22 by ybutkov           #+#    #+#             */
+/*   Updated: 2025/10/13 18:01:03 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef SHELL_INTERNAL_H
+# define SHELL_INTERNAL_H
 
-int	exit_from_child(int status_code)
-{
-	char *cmd[3];
-	char *code;
+# include "shell.h"
 
-	code = ft_itoa(status_code);
-	if (!code)
-		return (1);
-	cmd[0] = "exit_from_child";
-	cmd[1] = code;
-	cmd[2]  = NULL;
-	execve(cmd[0], cmd, NULL);
-	return (0);
-}
+int		execute_shell_node(t_ast_node *node, t_shell *shell, int in_fd,
+			int out_fd);
+void	build_shell(t_shell *shell, char **commands, int argc);
 
+#endif

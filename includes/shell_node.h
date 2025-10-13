@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 20:03:14 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/11 14:45:40 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 14:17:26 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ typedef struct s_shell_node
 		t_cmd		*cmd;
 		t_redir		*redir;
 	} data;
-
 	void			(*free)(struct s_shell_node *node);
 }					t_shell_node;
 
