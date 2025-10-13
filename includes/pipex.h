@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:11:49 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/13 14:11:36 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/13 19:32:04 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # define PIPEX "pipex: "
 # define COLON ": "
 # define EXIT_CMD_NOT_FOUND 127
+# define CMD_NOT_FOUND_MSG "command not found"
 
 char	*get_cmd_path(char *cmd, char **envp);
 char	**parse_command(char *command);
