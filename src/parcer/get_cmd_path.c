@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 16:25:19 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/14 12:57:54 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/14 20:50:22 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ static char	*get_full_path(char *cmd, char *env_paths)
 	full_path = check_full_path("", cmd);
 	if (full_path)
 		return (full_path);
+	if (cmd[0] == '/')
+		return (NULL);
 	all_paths = ft_split(env_paths, ':');
 	if (!all_paths)
 		return (NULL);
@@ -80,13 +82,19 @@ static char	*check_full_path(char *dir, char *cmd)
 
 	dir_len = ft_strlen(dir);
 	cmd_len = ft_strlen(cmd);
-	full_path = malloc(dir_len + cmd_len + 2);
+	if (dir_len > 0)
+		full_path = malloc(dir_len + cmd_len + 2);
+	else
+		full_path = malloc(dir_len + cmd_len + 1);
 	if (!full_path)
 		return (NULL);
-	ft_memcpy(full_path, dir, dir_len);
-	full_path[dir_len] = '/';
-	ft_memcpy(full_path + dir_len + 1, cmd, cmd_len);
-	full_path[dir_len + 1 + cmd_len] = '\0';
+	if (dir_len > 0)
+	{
+		ft_memcpy(full_path, dir, dir_len);
+		full_path[dir_len++] = '/';
+	}
+	ft_memcpy(full_path + dir_len, cmd, cmd_len);
+	full_path[dir_len + cmd_len] = '\0';
 	if (access(full_path, X_OK) == 0)
 		return (full_path);
 	free(full_path);
