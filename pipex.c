@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:10:57 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/14 13:29:31 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/14 14:10:59 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ static int	is_arg_not_empty(char *arg)
 {
 	char	*trimmed;
 
-	trimmed = ft_strtrim(arg, " \t\n");
+	// trimmed = ft_strtrim(arg, " \t\n");
+	trimmed = ft_strdup(arg);
 	if (trimmed && ft_strlen(trimmed) == 0)
 		return (free(trimmed), 0);
 	if (trimmed)

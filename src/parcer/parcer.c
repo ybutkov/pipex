@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:07:34 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/13 14:22:35 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/14 15:00:42 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@ t_token	*create_token(t_token_type type, char *value)
 	return (token);
 }
 
+void	skip_spaces(char **str)
+{
+	while (**str && in_set(**str, SPACES))
+		(*str)++;
+}
+
 char	*get_word(char **str)
 {
 	char	quote;
@@ -35,6 +41,11 @@ char	*get_word(char **str)
 
 	quote = 0;
 	start = *str;
+	if (**str && in_set(**str, SPACES))
+	{
+		skip_spaces(str);
+		return (ft_substr(start, 0, *str - start));
+	}
 	while (**str)
 	{
 		if (!quote && in_set(**str, QUOTES))
@@ -51,12 +62,6 @@ char	*get_word(char **str)
 	return (ft_substr(start, 0, *str - start));
 }
 
-void	skip_spaces(char **str)
-{
-	while (**str && in_set(**str, SPACES))
-		(*str)++;
-}
-
 t_token	*tokenize(char *input)
 {
 	t_token	*head;
@@ -67,7 +72,6 @@ t_token	*tokenize(char *input)
 	curr_token = NULL;
 	while (*input)
 	{
-		skip_spaces(&input);
 		if (*input == '\0')
 			break ;
 		if (in_set(*input, SPECIAL_CHARS))
@@ -82,6 +86,7 @@ t_token	*tokenize(char *input)
 		else
 			curr_token->next = token;
 		curr_token = token;
+		skip_spaces(&input);
 	}
 	return (head);
 }
