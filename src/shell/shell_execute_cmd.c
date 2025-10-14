@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:20:01 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/14 20:51:36 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/14 21:27:23 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,23 +66,16 @@ static void	apply_redirect(t_cmd *cmd, t_shell *shell)
 static int	execute_cmd_child(t_cmd *cmd, t_shell *shell, int input_fd,
 		int output_fd)
 {
-	// fprintf(stderr, "EXEC DEBUG: Running %s\n", cmd->path);
-    // fprintf(stderr, "EXEC DEBUG: input_fd=%d, output_fd=%d\n", input_fd, output_fd);
-    // fprintf(stderr, "EXEC DEBUG: STDIN=%d, STDOUT=%d\n", STDIN_FILENO, STDOUT_FILENO);
-    // fflush(stderr);
 	if (input_fd != STDIN_FILENO)
 	{
-		// fprintf(stderr, "EXEC DEBUG: Redirecting input %d -> %d\n", input_fd, STDIN_FILENO);
 		dup2(input_fd, STDIN_FILENO);
 		close(input_fd);
 	}
 	if (output_fd != STDOUT_FILENO)
 	{
-		// fprintf(stderr, "EXEC DEBUG: Redirecting output %d -> %d\n", output_fd, STDOUT_FILENO);
 		dup2(output_fd, STDOUT_FILENO);
 		close(output_fd);
 	}
-	// fflush(stderr);
 	apply_redirect(cmd, shell);
 	if (!cmd->path || access(cmd->path, X_OK) != 0)
 		output_error_and_exit(cmd->argv[0], CMD_NOT_FOUND_MSG, shell,

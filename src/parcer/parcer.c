@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:07:34 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/14 15:14:53 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/14 21:27:05 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ char	*get_word(char **str)
 	if (**str && in_set(**str, SPACES))
 	{
 		skip_spaces(str);
-		// return (ft_substr(start, 0, *str - start));
 	}
 	while (**str)
 	{
