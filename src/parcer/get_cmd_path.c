@@ -6,7 +6,7 @@
 /*   By: ybutkov <ybutkov@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 16:25:19 by ybutkov           #+#    #+#             */
-/*   Updated: 2025/10/13 14:17:04 by ybutkov          ###   ########.fr       */
+/*   Updated: 2025/10/14 12:57:54 by ybutkov          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ static char	*get_full_path(char *cmd, char *env_paths)
 	char	**paths;
 	char	**all_paths;
 
+	full_path = check_full_path("", cmd);
+	if (full_path)
+		return (full_path);
 	all_paths = ft_split(env_paths, ':');
 	if (!all_paths)
 		return (NULL);
@@ -53,35 +56,6 @@ char	*get_cmd_path(char *cmd, char **envp)
 	}
 	return (get_full_path(cmd, default_getenv()));
 }
-
-// char	*get_cmd_path(char *cmd, char **envp)
-// {
-// 	char	*full_path;
-// 	char	**paths;
-// 	char	**all_paths;
-
-// 	while (*envp)
-// 	{
-// 		if (ft_strncmp(*envp, "PATH=", 5) == 0)
-// 		{
-// 			all_paths = ft_split((*envp + 5), ':');
-// 			if (!all_paths)
-// 				return (NULL);
-// 			paths = all_paths;
-// 			while (*paths)
-// 			{
-// 				full_path = check_full_path(*paths, cmd);
-// 				if (full_path)
-// 					return (ft_free_split(all_paths), full_path);
-// 				paths++;
-// 			}
-// 			ft_free_split(all_paths);
-// 			break ;
-// 		}
-// 		envp++;
-// 	}
-// 	return (NULL);
-// }
 
 static void	ft_free_split(char **paths)
 {

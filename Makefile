@@ -27,6 +27,8 @@ C_PIPEX_FILES = \
 	ast/ast_node_core_2.c \
 	shell/shell_core.c \
 	shell/shell_execute.c \
+	shell/shell_execute_cmd.c \
+	shell/shell_execute_heredoc.c \
 	shell/shell_build.c \
 	shell/commands.c \
 	shell/shell_node.c \
@@ -34,7 +36,6 @@ C_PIPEX_FILES = \
 	shell/redirect.c \
 	error/output_error.c \
 	utils/free_str_array.c
-
 
 C_FIlES = $(addprefix $(SRC)/, $(C_PIPEX_FILES))
 C_OBJ_FIlES =	$(C_FIlES:%.c=$(BUILD_DIR)/%.o)
